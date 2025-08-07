@@ -251,7 +251,7 @@ def main():
                         os.remove(file_path)
                 except Exception:
                     pass
-        agent = initialize_agent("qwen/qwen3-coder:free", 10)
+        agent = initialize_agent("z-ai/glm-4.5-air:free", 10)
         if agent:
             st.session_state.agent = agent
             # st.success("✅ Agent initialized successfully!")
@@ -262,12 +262,11 @@ def main():
     with st.sidebar:
         st.header("🔧 Configuration")
         
-        # Model selection
-        model_name = st.selectbox(
+        # Model selection as text box
+        model_name = st.text_input(
             "Modèle OpenRouter",
-            ["qwen/qwen3-coder:free", "google/gemini-2.0-flash-exp:free", "meta-llama/llama-3.1-8b-instruct:free"],
-            index=0,
-            help="Sélectionnez le modèle OpenRouter à utiliser"
+            value="z-ai/glm-4.5-air:free",
+            help="Entrez le nom du modèle OpenRouter à utiliser (ex: z-ai/glm-4.5-air:free)"
         )
         
         # Max steps configuration

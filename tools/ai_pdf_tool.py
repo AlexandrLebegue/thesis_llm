@@ -171,14 +171,14 @@ DOCUMENT CONTENT:
         }
         
         data = {
-            "model": "google/gemini-2.0-flash-exp:free",
+            "model": "google/gemini-2.5-pro",
             "messages": [
                 {
                     "role": "user",
                     "content": prompt
                 }
             ],
-            "max_tokens": 100000,
+            "max_tokens": 1000000,
             "temperature": 0.1
         }
         

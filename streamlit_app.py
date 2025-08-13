@@ -251,7 +251,7 @@ def main():
                         os.remove(file_path)
                 except Exception:
                     pass
-        agent = initialize_agent("z-ai/glm-4.5-air:free", 10)
+        agent = initialize_agent("qwen/qwen3-coder:free", 10)
         if agent:
             st.session_state.agent = agent
             # st.success("✅ Agent initialized successfully!")
@@ -265,8 +265,8 @@ def main():
         # Model selection as text box
         model_name = st.text_input(
             "Modèle OpenRouter",
-            value="z-ai/glm-4.5-air:free",
-            help="Entrez le nom du modèle OpenRouter à utiliser (ex: z-ai/glm-4.5-air:free)"
+            value="qwen/qwen3-coder:free",
+            help="Entrez le nom du modèle OpenRouter à utiliser (ex: qwen/qwen3-coder:free)"
         )
         
         # Max steps configuration
@@ -375,45 +375,12 @@ def main():
                 
                 # Process with agent and show response for each PDF
                 with st.chat_message("assistant"):
-                    if processed_files:
-                        # Check if user wants to compare multiple files or process them individually
-                        if len(processed_files) > 1 and any(keyword in message_text.lower() for keyword in ['compare', 'difference', 'différence', 'comparer', 'vs', 'versus']):
-                            # Process all files together for comparison
-                            with st.spinner(f"Comparaison de {len(processed_files)} fichiers..."):
-                                combined_response = process_user_input(
-                                    st.session_state.agent,
-                                    message_text if message_text.strip() else "Veuillez comparer ces fichiers PDF",
-                                    pdf_files=processed_files
-                                )
-                                st.markdown(combined_response)
-                        else:
-                            # Process each PDF individually
-                            all_responses = []
-                            for i, file_info in enumerate(processed_files):
-                                with st.spinner(f"Traitement de {file_info['name']}..."):
-                                    file_response = process_user_input(
-                                        st.session_state.agent,
-                                        message_text if message_text.strip() else "Veuillez analyser ce fichier PDF",
-                                        pdf_files=[file_info]
-                                    )
-                                    
-                                    # Display response with file identification
-                                    st.markdown(f"### 📄 Analyse pour : {file_info['name']}")
-                                    st.markdown(file_response)
-                                    all_responses.append(f"**{file_info['name']}:**\n{file_response}")
-                                    
-                                    if i < len(processed_files) - 1:
-                                        st.divider()
-                            
-                            # Combine all responses for chat history
-                            combined_response = "\n\n---\n\n".join(all_responses)
-                    else:
                         # No files, just process the text
                         with st.spinner("Traitement de votre demande..."):
                             combined_response = process_user_input(
                                 st.session_state.agent,
                                 message_text,
-                                None
+                                processed_files
                             )
                             st.markdown(combined_response)
                             # After processing, check for new generated files and display download buttons
@@ -446,12 +413,12 @@ def main():
                                     "file_name": file
                                 })
                     
-                    # Add agent response to chat history
-                    st.session_state.chat_history.append({
-                        "role": "assistant",
-                        "content": combined_response
-                    })
-                    st.rerun()
+                        # Add agent response to chat history
+                        st.session_state.chat_history.append({
+                            "role": "assistant",
+                            "content": combined_response
+                        })
+                        st.rerun()
 
         
         # Clear chat button
